@@ -1,4 +1,3 @@
-from typing import Optional, get_origin
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import on_message, on_shell_command
 from nonebot.typing import T_State
