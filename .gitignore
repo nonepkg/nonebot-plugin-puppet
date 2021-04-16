@@ -1,0 +1,8 @@
+/*
+!/nonebot_plugin_puppet/
+__pycache__
+!pyproject.toml
+!poetry.lock
+!README.md
+!LICENSE
+!.gitignore

@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "nonebot_plugin_puppet"
+version = "0.1.0"
+description = "Make Nonebot your puppet"
+authors = ["Jigsaw <j1g5aw@foxmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/Jigsaw111/nonebot_plugin_puppet"
+repository = "https://github.com/Jigsaw111/nonebot_plugin_puppet"
+
+[tool.poetry.dependencies]
+python = "^3.7.3"
+nonebot2 = "^2.0.0-alpha.11"
+nonebot-adapter-cqhttp = "^2.0.0a11.post2"
+
+[tool.poetry.dev-dependencies]
+nb-cli = "^0.4.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
