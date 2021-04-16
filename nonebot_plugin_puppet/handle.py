@@ -2,6 +2,7 @@ from argparse import Namespace
 
 from .data import *
 
+
 def handle_link(
     args: Namespace,
     origin: int,
@@ -9,9 +10,9 @@ def handle_link(
     if origin in get_conv_mapping():
         return "已链接其他会话！"
 
-    user_id = args.user if hasattr(args,"user") else None
+    user_id = args.user if hasattr(args, "user") else None
 
-    group_id = args.group if hasattr(args,"group") else None
+    group_id = args.group if hasattr(args, "group") else None
 
     link_conv(origin, user_id, group_id)
 
@@ -29,4 +30,3 @@ def handle_unlink(
     unlink_conv(origin)
 
     return "已解除链接！"
-

@@ -6,8 +6,11 @@ from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent, PrivateMessag
 from .data import get_conv_mapping
 from .parser import puppet_parser
 
-puppet = on_shell_command("puppet", parser = puppet_parser, priority = 1, permission = SUPERUSER)
-puppet_ = on_message(priority = 10, block = False)
+puppet = on_shell_command(
+    "puppet", parser=puppet_parser, priority=1, permission=SUPERUSER
+)
+puppet_ = on_message(priority=10, block=False)
+
 
 @puppet.handle()
 async def _(bot: Bot, event: PrivateMessageEvent, state: T_State):
@@ -16,14 +19,15 @@ async def _(bot: Bot, event: PrivateMessageEvent, state: T_State):
     if hasattr(args, "handle"):
         await puppet.finish(args.handle(args, origin))
 
+
 @puppet_.handle()
 async def _(bot: Bot, event: Event):
     conv_mapping = get_conv_mapping()
     reverse_conv_mapping = get_conv_mapping(reverse=True)
 
-    if isinstance(event,PrivateMessageEvent):
+    if isinstance(event, PrivateMessageEvent):
         conv_id = event.user_id
-    elif isinstance(event,GroupMessageEvent):
+    elif isinstance(event, GroupMessageEvent):
         conv_id = event.group_id
 
     user_id, group_id = None, None
@@ -37,6 +41,4 @@ async def _(bot: Bot, event: Event):
         else:
             group_id = conv_mapping[conv_id]["conv_id"]
 
-    await bot.send_msg(user_id=user_id,group_id=group_id,message=event.get_message())
-    
-    
+    await bot.send_msg(user_id=user_id, group_id=group_id, message=event.get_message())

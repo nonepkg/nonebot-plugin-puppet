@@ -4,6 +4,7 @@ from typing import Optional, Dict
 
 __DATA_PATH = Path() / "data" / "puppet" / "conv_mapping.yml"
 
+
 def get_conv_mapping(reverse: bool = False):
     conv_mapping = __load_conv_mapping()
 
@@ -12,15 +13,18 @@ def get_conv_mapping(reverse: bool = False):
 
     return conv_mapping
 
+
 def link_conv(
     origin: int,
     user_id: Optional[int] = None,
     group_id: Optional[int] = None,
-    ):
+):
     __update_conv_mapping(origin, True, user_id, group_id)
+
 
 def unlink_conv(origin: int):
     __update_conv_mapping(origin, False)
+
 
 # 更新会话映射
 def __update_conv_mapping(
