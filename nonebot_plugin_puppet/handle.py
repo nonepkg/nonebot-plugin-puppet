@@ -1,3 +1,4 @@
+from time import strftime, localtime
 from argparse import Namespace
 
 from .data import *
@@ -37,5 +38,19 @@ def handle_unlink(args: Namespace) -> Namespace:
     else:
         unlink_conv(args.origin)
         args.message = "已解除链接！"
+
+    return args
+
+
+def handle_transmit(args: Namespace) -> Namespace:
+    conv_mapping = get_conv_mapping()
+    reverse_conv_mapping = get_conv_mapping(reverse=True)
+
+    if args.origin in reverse_conv_mapping:
+        args.user_id = reverse_conv_mapping[args.origin]
+        args.message = f"{args.name} {strftime('%Y-%m-%d %H:%M:%S',localtime(args.time))}\n  {args.message}"
+    elif args.origin in conv_mapping:
+        args.user_id = conv_mapping[args.origin]["user_id"]
+        args.group_id = conv_mapping[args.origin]["group_id"]
 
     return args
