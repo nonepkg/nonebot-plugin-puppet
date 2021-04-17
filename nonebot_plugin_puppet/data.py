@@ -1,6 +1,6 @@
 import yaml
 from pathlib import Path
-from typing import Optional, Union, Dict
+from typing import Optional, Dict
 
 __DATA_PATH = Path() / "data" / "puppet" / "conv_mapping.yml"
 
@@ -10,7 +10,10 @@ def get_conv_mapping(reverse: bool = False):
     conv_mapping = __load_conv_mapping()
 
     if reverse:
-        return {conv_mapping[key]["conv_id"]: key for key in conv_mapping}
+        return {
+            value["user_id"] if value["user_id"] else value["group_id"]: key
+            for key, value in conv_mapping.items()
+        }
 
     return conv_mapping
 
@@ -37,9 +40,7 @@ def __update_conv_mapping(
     conv_mapping = get_conv_mapping()
 
     if link:
-        conv_id = user_id if user_id else group_id
-        type = "user" if user_id else "group"
-        conv_mapping[origin] = {"type": type, "conv_id": conv_id}
+        conv_mapping[origin] = {"user_id": user_id, "group_id": group_id}
     else:
         conv_mapping.pop(origin)
 
@@ -47,7 +48,7 @@ def __update_conv_mapping(
 
 
 # 保存会话映射
-def __load_conv_mapping() -> Dict[int, Dict[str, Union[int, str]]]:
+def __load_conv_mapping() -> Dict[int, Dict[str, int]]:
     try:
         return yaml.safe_load(__DATA_PATH.open("r", encoding="utf-8"))
     except FileNotFoundError:
@@ -55,7 +56,7 @@ def __load_conv_mapping() -> Dict[int, Dict[str, Union[int, str]]]:
 
 
 # 保存会话映射
-def __dump_conv_mapping(conv_mapping: Dict[int, int]):
+def __dump_conv_mapping(conv_mapping: Dict[int, Dict[str, int]]):
     __DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
     yaml.dump(
         conv_mapping,

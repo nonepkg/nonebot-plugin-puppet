@@ -16,8 +16,7 @@ puppet_ = on_message(priority=10, block=False)
 async def _(bot: Bot, event: PrivateMessageEvent, state: T_State):
     args = state["args"]
     args.origin = event.user_id
-    args.user_id = None
-    args.group_id = None
+    args.user_id, args.group_id = None, None
     if hasattr(args, "handle"):
         args = args.handle(args)
         if args.message:
@@ -32,18 +31,16 @@ async def _(bot: Bot, event: Event):
     reverse_conv_mapping = get_conv_mapping(reverse=True)
 
     if isinstance(event, PrivateMessageEvent):
-        conv_id = event.user_id
+        origin = event.user_id
     elif isinstance(event, GroupMessageEvent):
-        conv_id = event.group_id
+        origin = event.group_id
 
     user_id, group_id = None, None
 
-    if conv_id in reverse_conv_mapping:
-        user_id = reverse_conv_mapping[conv_id]
-    elif conv_id in conv_mapping:
-        if conv_mapping[conv_id]["type"] == "user":
-            user_id = conv_mapping[conv_id]["conv_id"]
-        else:
-            group_id = conv_mapping[conv_id]["conv_id"]
+    if origin in reverse_conv_mapping:
+        user_id = reverse_conv_mapping[origin]
+    elif origin in conv_mapping:
+        user_id = conv_mapping[origin]["user_id"]
+        group_id = conv_mapping[origin]["group_id"]
 
     await bot.send_msg(user_id=user_id, group_id=group_id, message=event.get_message())

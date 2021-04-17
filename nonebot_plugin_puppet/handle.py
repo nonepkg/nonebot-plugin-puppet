@@ -24,10 +24,8 @@ def handle_send(args: Namespace) -> Namespace:
         args.user_id = args.origin
         args.message = "尚未链接任何会话！"
     else:
-        if conv_mapping[args.origin]["type"] == "user":
-            args.user_id = conv_mapping[args.origin]["conv_id"]
-        else:
-            args.group_id = conv_mapping[args.origin]["conv_id"]
+        args.user_id = conv_mapping[args.origin]["user_id"]
+        args.group_id = conv_mapping[args.origin]["group_id"]
     return args
 
 
