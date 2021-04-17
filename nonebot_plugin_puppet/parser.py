@@ -14,6 +14,12 @@ conversation.add_argument("-u", "--user", action="store", type=int)
 conversation.add_argument("-g", "--group", action="store", type=int)
 link_parser.set_defaults(handle=handle_link)
 
+send_parser = puppet_subparsers.add_parser(
+    "send", help="Send message to current conversation"
+)
+send_parser.add_argument("message", action="store")
+send_parser.set_defaults(handle=handle_send)
+
 unlink_parser = puppet_subparsers.add_parser(
     "unlink", help="Unlink current conversation"
 )

@@ -42,7 +42,10 @@ git clone https://github.com/Jigsaw111/nonebot_plugin_puppet.git
 **仅限超级用户私聊使用**
 
 - `puppet link` 链接会话
-
+- - `-u user_id, --user user_id` 可选参数，指定链接会话的 QQ 号
+- - `-g group_id, --group group_id` 可选参数，指定链接会话的群号
+- `puppet send message` 向链接会话发送消息，用于发送已被占用的指令
+- - `message` 需要发送消息，如有空格请用 `""` 包裹
 - `puppet unlink` 取消链接会话
 
 ### Q&A

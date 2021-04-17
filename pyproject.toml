@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot_plugin_puppet"
-version = "0.1.1"
+version = "0.1.2"
 description = "Make Nonebot your puppet"
 authors = ["Jigsaw <j1g5aw@foxmail.com>"]
 license = "MIT"

@@ -1,11 +1,12 @@
 import yaml
 from pathlib import Path
-from typing import Optional, Dict
+from typing import Optional, Union, Dict
 
 __DATA_PATH = Path() / "data" / "puppet" / "conv_mapping.yml"
 
 
 def get_conv_mapping(reverse: bool = False):
+
     conv_mapping = __load_conv_mapping()
 
     if reverse:
@@ -46,7 +47,7 @@ def __update_conv_mapping(
 
 
 # 保存会话映射
-def __load_conv_mapping() -> Dict[int, int]:
+def __load_conv_mapping() -> Dict[int, Dict[str, Union[int, str]]]:
     try:
         return yaml.safe_load(__DATA_PATH.open("r", encoding="utf-8"))
     except FileNotFoundError:

@@ -3,30 +3,41 @@ from argparse import Namespace
 from .data import *
 
 
-def handle_link(
-    args: Namespace,
-    origin: int,
-) -> str:
-    if origin in get_conv_mapping():
-        return "已链接其他会话！"
+def handle_link(args: Namespace) -> Namespace:
+    args.user_id = args.origin
 
-    user_id = args.user if hasattr(args, "user") else None
+    if args.origin in get_conv_mapping():
+        args.message = "已链接其他会话！"
+    else:
+        user_id = args.user if hasattr(args, "user") else None
+        group_id = args.group if hasattr(args, "group") else None
+        link_conv(args.origin, user_id, group_id)
+        args.message = "会话链接成功！"
 
-    group_id = args.group if hasattr(args, "group") else None
-
-    link_conv(origin, user_id, group_id)
-
-    return "会话链接成功！"
+    return args
 
 
-def handle_unlink(
-    args: Namespace,
-    origin: int,
-) -> str:
+def handle_send(args: Namespace) -> Namespace:
+    conv_mapping = get_conv_mapping()
 
-    if origin not in get_conv_mapping():
-        return "尚未链接任何会话！"
+    if args.origin not in conv_mapping:
+        args.user_id = args.origin
+        args.message = "尚未链接任何会话！"
+    else:
+        if conv_mapping[args.origin]["type"] == "user":
+            args.user_id = conv_mapping[args.origin]["conv_id"]
+        else:
+            args.group_id = conv_mapping[args.origin]["conv_id"]
+    return args
 
-    unlink_conv(origin)
 
-    return "已解除链接！"
+def handle_unlink(args: Namespace) -> Namespace:
+    args.user_id = args.origin
+
+    if args.origin not in get_conv_mapping():
+        args.message = "尚未链接任何会话！"
+    else:
+        unlink_conv(args.origin)
+        args.message = "已解除链接！"
+
+    return args
