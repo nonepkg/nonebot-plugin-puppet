@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "nonebot_plugin_transfer"
+name = "nonebot_plugin_puppet"
 version = "0.2.0-alpha.1"
 description = "Transfer message through Nonebot"
 authors = ["Jigsaw <j1g5aw@foxmail.com>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/Jigsaw111/nonebot_plugin_transfer"
-repository = "https://github.com/Jigsaw111/nonebot_plugin_transfer"
+homepage = "https://github.com/Jigsaw111/nonebot_plugin_puppet"
+repository = "https://github.com/Jigsaw111/nonebot_plugin_puppet"
 
 [tool.poetry.dependencies]
 python = "^3.7.3"
