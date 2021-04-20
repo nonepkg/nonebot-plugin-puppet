@@ -21,6 +21,7 @@ link_parser.add_argument(
 link_parser.add_argument(
     "-g", "-gb", "--group-b", action="store", nargs="+", default=[], type=int
 )
+link_parser.add_argument("-q", "--quiet", action="store_true")
 link_parser.set_defaults(handle=handle_link)
 
 unlink_parser = puppet_subparsers.add_parser(

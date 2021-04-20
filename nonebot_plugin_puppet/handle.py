@@ -5,26 +5,80 @@ from .data import *
 
 
 class Namespace(ArgNamespace):
-    pass
+    user_a: List[int]
+    group_a: List[int]
+    user_b: List[int]
+    group_b: List[int]
 
 
 def handle_link(args: Namespace) -> Namespace:
 
-    user_id_a = args.user_a if hasattr(args, "user_a") else []
-    group_id_a = args.group_a if hasattr(args, "group_a") else []
-    if not user_id_a and not group_id_a:
-        if args.user_id:
-            user_id_a.append(args.user_id)
-        if args.group_id:
-            group_id_a.append(args.group_id)
+    conv_a = (
+        [["user", id] for id in args.user_a] + [["group", id] for id in args.group_a]
+        if args.user_a or args.group_a
+        else [
+            [
+                "user" if args.user_id else "group",
+                args.user_id if args.user_id else args.group_id,
+            ]
+        ]
+    )
+    conv_b = [["user", id] for id in args.user_b] + [
+        ["group", id] for id in args.group_b
+    ]
 
-    user_id_b = args.user_b if hasattr(args, "user_b") else []
-    group_id_b = args.group_b if hasattr(args, "group_b") else []
+    link_conv(conv_a, conv_b)
 
-    link_conv(user_id_a, group_id_a, user_id_b, group_id_b)
+    args.conv_r = [
+        [
+            args.user_id,
+            args.group_id,
+            "已使"
+            + ",".join(
+                [f"{'用户' if type == 'user' else '群'} {id}" for type, id in conv_a]
+            )
+            + "与"
+            + ",".join(
+                [f"{'用户' if type == 'user' else '群'} {id}" for type, id in conv_b]
+            )
+            + "之间建立了链接！",
+        ]
+    ]
 
-    args.message = "会话链接成功！"
-    args.recv_args = [[args.user_id, args.group_id, args.message]]
+    if not args.quiet:
+        args.conv_r.extend(
+            [
+                [
+                    id if type == "user" else None,
+                    id if type == "group" else None,
+                    "已与"
+                    + ",".join(
+                        [
+                            f"{'用户' if type == 'user' else '群'} {id}"
+                            for type, id in conv_b
+                        ]
+                    )
+                    + "之间建立了链接！",
+                ]
+                for type, id in conv_a
+            ]
+            + [
+                [
+                    id if type == "user" else None,
+                    id if type == "group" else None,
+                    "已与"
+                    + ",".join(
+                        [
+                            f"{'用户' if type == 'user' else '群'} {id}"
+                            for type, id in conv_a
+                        ]
+                    )
+                    + "之间建立了链接！",
+                ]
+                for type, id in conv_b
+            ]
+        )
+
     return args
 
 
@@ -96,23 +150,20 @@ def handle_send(args: Namespace) -> Namespace:
 
 
 def handle_transmit(args: Namespace) -> Namespace:
-    conv_mapping = get_conv_mapping(args.user_id, args.group_id)
+    conv_mapping = get_conv_mapping(None,args.user_id, args.group_id)
 
-    args.recv_args = []
+    args.conv_r = []
 
-    args.sender = f"{args.name} {strftime('%Y-%m-%d %H:%M:%S',localtime(args.time))} \n"
-
-    if not args.is_superuser:
-        args.message = args.conv + args.sender + args.message
+    if not hasattr(args,"sender"):
+        args.sender = f"{args.name} {strftime('%Y-%m-%d %H:%M:%S',localtime(args.time))} \n"
 
     for type in conv_mapping:
         for id in conv_mapping[type]:
-            args.recv_args.append(
+            args.conv_r.append(
                 [
                     id if type == "user" else None,
                     id if type == "group" else None,
-                    f"{args.message}",
+                    f"{args.group}{args.sender}{args.message}",
                 ]
             )
-
     return args
