@@ -39,16 +39,8 @@ unlink_parser.add_argument(
 unlink_parser.add_argument(
     "-g", "-gb", "--group-b", action="store", nargs="+", default=[], type=int
 )
+unlink_parser.add_argument("-q", "--quiet", action="store_true")
 unlink_parser.set_defaults(handle=handle_unlink)
-
-clear_parser = puppet_subparsers.add_parser("clear", help="Unlink current conv_parser")
-clear_parser.add_argument(
-    "-u", "--user", action="store", nargs="+", default=[], type=int
-)
-clear_parser.add_argument(
-    "-g", "--group", action="store", nargs="+", default=[], type=int
-)
-clear_parser.set_defaults(handle=handle_clear)
 
 list_parser = puppet_subparsers.add_parser("list")
 list_parser_group = list_parser.add_mutually_exclusive_group()

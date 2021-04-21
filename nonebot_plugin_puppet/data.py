@@ -11,7 +11,7 @@ class ConvMapping:
 
     def __init__(self, path: Path = Path() / "data" / "puppet" / "__conv_mapping.yml"):
         self.__path = path
-        self.__load(self)
+        self.__load()
 
     def get_conv(self, conv: Conv = {"user": [], "group": []}) -> Conv:
 
@@ -19,8 +19,9 @@ class ConvMapping:
 
         if not conv == {"user": [], "group": []}:
             for type in conv:
-                if conv[type] in self.__conv_mapping[type]:
-                    tmp_conv_mapping = self.__conv_mapping[type][conv[type]]
+                for id in conv[type]:
+                    if id in self.__conv_mapping[type]:
+                        tmp_conv_mapping = self.__conv_mapping[type][id]
         else:
             for type in self.__conv_mapping:
                 for id in self.__conv_mapping[type]:
@@ -52,7 +53,7 @@ class ConvMapping:
                         if id_b in self.__conv_mapping[type_a][id_a][type_b]:
                             result[type_a][id_a][type_b][id_b] = False
                         else:
-                            self.__conv_mapping[type_a][id_a].append(id_b)
+                            self.__conv_mapping[type_a][id_a][type_b].append(id_b)
                             result[type_a][id_a][type_b][id_b] = True
                         if id_a in self.__conv_mapping[type_b][id_b][type_a]:
                             result[type_b][id_b][type_a][id_a] = False
@@ -115,7 +116,9 @@ class ConvMapping:
     # 导入会话映射
     def __load(self) -> "ConvMapping":
         try:
-            self.__conv_mapping = yaml.safe_load(self.__path.open("r", encoding="utf-8"))
+            self.__conv_mapping = yaml.safe_load(
+                self.__path.open("r", encoding="utf-8")
+            )
         except FileNotFoundError:
             self.__conv_mapping = {"user": {}, "group": {}}
         return self
