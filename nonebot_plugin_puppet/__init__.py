@@ -77,14 +77,11 @@ async def _(bot: Bot, event: MessageEvent):
         event.sender.nickname
         if isinstance(event, PrivateMessageEvent)
         else event.sender.card
-        if event.sender.card
-        else event.sender.nickname
     )
     args.time = event.time
     args.is_superuser = str(event.user_id) in bot.config.superusers
     args.message = unescape(str(event.get_message()))
 
-    print(event.sender.nickname, event.sender.card)
     if hasattr(args, "handle"):
         args = args.handle(args)
         for type in args.conv_r:
