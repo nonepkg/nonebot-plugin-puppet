@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "nonebot_plugin_puppet"
 version = "0.2.0-alpha.1"
-description = "Transfer message through Nonebot"
+description = "Make Nonebot your puppet"
 authors = ["Jigsaw <j1g5aw@foxmail.com>"]
 license = "MIT"
 readme = "README.md"

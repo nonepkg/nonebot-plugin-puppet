@@ -53,7 +53,7 @@ def handle_unlink(args: Namespace) -> Namespace:
     )
     conv_b = (
         {"user": args.user_b, "group": args.group_b}
-        if args.user or args.group
+        if args.user_a or args.group_b
         else ConvMapping().get_conv(args.conv_s)
     )
 

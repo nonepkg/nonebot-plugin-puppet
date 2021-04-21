@@ -54,11 +54,7 @@ git clone https://github.com/Jigsaw111/nonebot_plugin_puppet.git
 - - 不设置的话默认为当前会话的 QQ 号/群号
 - - `-u user_id ..., --user-b user_id ...` 可选参数，指定链接会话的 QQ 号
 - - `-g group_id ..., --group-b group_id ...` 可选参数，指定链接会话的群号
-- - 不设置的话，如果当前会话只链接了一个会话则会默认为该会话的 QQ 号/群号
-- `puppet clear` 清除指定会话的所有链接会话
-- - `-u user_id ..., --user user_id` 可选参数，指定链接会话的 QQ 号，支持多个参数
-- - `-g group_id ..., --group group_id` 可选参数，指定链接会话的群号，支持多个参数
-- - 不设置的话默认为当前会话的 QQ 号/群号
+- - 不设置的话，默认为当前会话链接的所有会话
 - `puppet list` 查看链接会话列表
 - - `-u user_id, --user user_id` 互斥参数，指定会话的 QQ 号
 - - `-g group_id, --group group_id` 互斥参数，指定会话的群号
@@ -67,8 +63,8 @@ git clone https://github.com/Jigsaw111/nonebot_plugin_puppet.git
 - - - `message` 需要发送的消息，支持 CQ 码，如含空格请用 `""` 包裹
 - - `-u user_id ..., --user user_id ...` 可选参数，指定接收会话的 QQ 号
 - - `-g group_id ..., --group group_id ...` 可选参数，指定接收会话的群号
+- - 不设置的话默认为当前会话链接的所有会话
 - - `--a, --all` 可选参数，指定所有群聊
-- - 不设置的话，如果当前会话只链接了一个会话则会默认为该会话的 QQ 号/群号
 
 ### Q&A
 
@@ -84,20 +80,17 @@ git clone https://github.com/Jigsaw111/nonebot_plugin_puppet.git
 
 - [x] 不允许多个超级用户链接到同一会话
 
-### 原理
+### To Do
 
-一开始其实只是想调用转发消息的 API 来实现，但是这样无法得知发送消息的人和会话，所以就得自己造轮子了。
-
-0.1.0 的时候实现了简单的单对单转接 (超级用户私聊<->群，超级用户私聊<->私聊)，但是我不太满意，于是打算再进一步实现多对多的转接，然后就写会话映射的数据结构写得差点脑溢血了。目前把命令之外的消息转接部分搞定了（大概）。
-
-- 私聊<->群 conv sender msg
-- 群<->私聊 conv sender msg
-- 私聊<->私聊 conv sender msg
-- 群<->群 conv sender msg
-
+- [ ] 允许单向转接
+- [ ] 转接请求和通知
 
 ### Changelog
 
-- 210416，创建项目。
+- 210421 0.2.0-alpha.1
+- - 实现多对多的会话转接
+- - 重构数据结构以便下次更新
+- 210416 0.1.0
+- - 实现单(超级用户)对单(好友,群)的会话转接
 
 </details>
