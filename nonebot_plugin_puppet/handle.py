@@ -9,6 +9,8 @@ class Namespace(ArgNamespace):
     group_a: List[int] = []
     user_b: List[int] = []
     group_b: List[int] = []
+    user: List[int] = []
+    group: List[int] = []
     message: str
     conv_s: Conv
     conv_r: Conv
@@ -24,6 +26,20 @@ def handle_link(args: Namespace) -> Namespace:
     conv_b = {"user": args.user_b, "group": args.group_b}
 
     result = ConvMapping().link_conv(conv_a, conv_b)
+
+    if not args.quiet:
+        for type_a in result:
+            for id_a in result[type_a]:
+                args.conv_r[type_a][
+                    id_a
+                ] = f"{'用户' if type_a == 'user' else '群'} {id_a} 已与以下会话建立链接:"
+                for type_b in result[type_a][id_a]:
+                    if result[type_a][id_a][type_b]:
+                        args.conv_r[type_a][id_a] += (
+                            "\n用户:" if type == "user" else "\n群:"
+                        )
+                        for id_b in result[type_a][id_a][type_b]:
+                            args.conv_r[type_a][id_a] += "\n" + str(id_b)
 
     return args
 
@@ -42,6 +58,20 @@ def handle_unlink(args: Namespace) -> Namespace:
     )
 
     result = ConvMapping().unlink_conv(conv_a, conv_b)
+
+    if not args.quiet:
+        for type_a in result:
+            for id_a in result[type_a]:
+                args.conv_r[type_a][
+                    id_a
+                ] = f"{'用户' if type_a == 'user' else '群'} {id_a} 已与以下会话解除链接:"
+                for type_b in result[type_a][id_a]:
+                    if result[type_a][id_a][type_b]:
+                        args.conv_r[type_a][id_a] += (
+                            "\n用户:" if type == "user" else "\n群:"
+                        )
+                        for id_b in result[type_a][id_a][type_b]:
+                            args.conv_r[type_a][id_a] += "\n" + str(id_b)
 
     return args
 
