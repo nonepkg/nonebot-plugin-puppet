@@ -39,7 +39,8 @@ def handle_link(args: Namespace) -> Namespace:
                             "\n用户:" if type_b == "user" else "\n群:"
                         )
                         for id_b in result[type_a][id_a][type_b]:
-                            args.conv_r[type_a][id_a] += "\n" + str(id_b)
+                            if result[type_a][id_a][type_b][id_b]:
+                                args.conv_r[type_a][id_a] += "\n" + str(id_b)
 
     return args
 
@@ -71,7 +72,8 @@ def handle_unlink(args: Namespace) -> Namespace:
                             "\n用户:" if type_b == "user" else "\n群:"
                         )
                         for id_b in result[type_a][id_a][type_b]:
-                            args.conv_r[type_a][id_a] += "\n" + str(id_b)
+                            if result[type_a][id_a][type_b][id_b]:
+                                args.conv_r[type_a][id_a] += "\n" + str(id_b)
 
     return args
 

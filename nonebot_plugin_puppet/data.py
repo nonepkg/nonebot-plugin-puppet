@@ -47,7 +47,12 @@ class ConvMapping:
             for id_a in conv_a[type_a]:
                 for type_b in conv_b:
                     for id_b in conv_b[type_b]:
-                        if type_a == type_b and conv_a == conv_b:
+                        if (
+                            type_a == type_b
+                            and id_a == id_b
+                            or id_a not in self.__conv_mapping[type_a]
+                            or id_b not in self.__conv_mapping[type_b]
+                        ):
                             result[type_a][id_a][type_b][id_b] = False
                             continue
                         if id_b in self.__conv_mapping[type_a][id_a][type_b]:
@@ -75,7 +80,12 @@ class ConvMapping:
             for id_a in conv_a[type_a]:
                 for type_b in conv_b:
                     for id_b in conv_b[type_b]:
-                        if type_a == type_b and conv_a == conv_b:
+                        if (
+                            type_a == type_b
+                            and id_a == id_b
+                            or id_a not in self.__conv_mapping[type_a]
+                            or id_b not in self.__conv_mapping[type_b]
+                        ):
                             result[type_a][id_a][type_b][id_b] = False
                             continue
                         if id_b not in self.__conv_mapping[type_a][id_a][type_b]:

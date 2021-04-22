@@ -79,6 +79,7 @@ git clone https://github.com/Jigsaw111/nonebot_plugin_puppet.git
 ### Bug
 
 - [x] 不允许多个超级用户链接到同一会话
+- [x] 如果指定的会话不在会话列表里会产生错误
 
 ### To Do
 

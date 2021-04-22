@@ -43,11 +43,14 @@ async def _(bot: Bot, event: MessageEvent, state: T_State):
         args = args.handle(args)
         for type in args.conv_r:
             for id in args.conv_r[type]:
-                await bot.send_msg(
-                    user_id=id if type == "user" else None,
-                    group_id=id if type == "group" else None,
-                    message=Message(args.conv_r[type][id]),
-                )
+                try:
+                    await bot.send_msg(
+                        user_id=id if type == "user" else None,
+                        group_id=id if type == "group" else None,
+                        message=Message(args.conv_r[type][id]),
+                    )
+                except:
+                    pass
 
 
 @puppet_transmit.handle()
@@ -86,8 +89,11 @@ async def _(bot: Bot, event: MessageEvent):
         args = args.handle(args)
         for type in args.conv_r:
             for id in args.conv_r[type]:
-                await bot.send_msg(
-                    user_id=id if type == "user" else None,
-                    group_id=id if type == "group" else None,
-                    message=Message(args.conv_r[type][id]),
-                )
+                try:
+                    await bot.send_msg(
+                        user_id=id if type == "user" else None,
+                        group_id=id if type == "group" else None,
+                        message=Message(args.conv_r[type][id]),
+                    )
+                except:
+                    pass
