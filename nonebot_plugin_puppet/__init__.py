@@ -77,9 +77,9 @@ async def _(bot: Bot, event: MessageEvent):
         else f"{(await bot.get_group_info(group_id=event.group_id))['group_name']}({event.group_id})\n"
     )
     args.name = (
-        event.sender.nickname
-        if isinstance(event, PrivateMessageEvent)
-        else event.sender.card
+        event.sender.card
+        if isinstance(event, GroupMessageEvent) and event.sender.card
+        else event.sender.nickname
     )
     args.time = event.time
     args.is_superuser = str(event.user_id) in bot.config.superusers
