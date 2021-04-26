@@ -60,21 +60,11 @@ git clone https://github.com/Jigsaw111/nonebot_plugin_puppet.git
 - - `-g group_id, --group group_id` 互斥参数，指定会话的群号
 - - 不设置的话默认为当前会话的 QQ 号/群号
 - `puppet send message` 向指定会话发送消息，支持 CQ 码
-- - - `message` 需要发送的消息，支持 CQ 码，如含空格请用 `""` 包裹
+- - `message` 需要发送的消息，支持 CQ 码，如含空格请用 `""` 包裹
 - - `-u user_id ..., --user user_id ...` 可选参数，指定接收会话的 QQ 号
 - - `-g group_id ..., --group group_id ...` 可选参数，指定接收会话的群号
 - - 不设置的话默认为当前会话链接的所有会话
 - - `--a, --all` 可选参数，指定所有群聊
-
-### Q&A
-
-- **这是什么？**  
-  会话转接。
-- **有什么用？**  
-  **没有用**。这个功能一开始是 Dice! 的一部分（具体是不是这功能我不知道，我从没用过），我的移植计划将其从 NoDice 项目中剔除出来（同时剔除的还有一大堆奇奇怪怪的功能），感觉还挺好玩的就写了这么个插件。
-
-<details>
-<summary>展开更多</summary>
 
 ### Bug
 
