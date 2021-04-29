@@ -16,7 +16,7 @@ from .parser import Namespace, puppet_parser, handle_transmit
 puppet_command = on_shell_command(
     "puppet", parser=puppet_parser, priority=1, permission=SUPERUSER
 )
-puppet_transmit = on_message(priority=10, block=False)
+puppet_message = on_message(priority=10, block=False)
 
 
 @puppet_command.handle()
@@ -53,7 +53,7 @@ async def _(bot: Bot, event: MessageEvent, state: T_State):
                     pass
 
 
-@puppet_transmit.handle()
+@puppet_message.handle()
 async def _(bot: Bot, event: MessageEvent):
     ConvMapping().update_conv(
         {

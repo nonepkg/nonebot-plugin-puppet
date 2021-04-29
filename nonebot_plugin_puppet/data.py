@@ -13,19 +13,29 @@ class ConvMapping:
         self.__path = path
         self.__load()
 
-    def get_conv(self, conv: Conv = {"user": [], "group": []}) -> Conv:
+    def get_conv(
+        self, conv: Conv = {"user": [], "group": []}, reverse: bool = False
+    ) -> Conv:
 
         tmp_conv_mapping = {"user": [], "group": []}
 
-        if not conv == {"user": [], "group": []}:
-            for type in conv:
-                for id in conv[type]:
-                    if id in self.__conv_mapping[type]:
-                        tmp_conv_mapping = self.__conv_mapping[type][id]
+        if conv == {"user": [], "group": []}:
+            for type_a in self.__conv_mapping:
+                for id_a in self.__conv_mapping[type_a]:
+                    tmp_conv_mapping[type_a].append(id_a)
         else:
-            for type in self.__conv_mapping:
-                for id in self.__conv_mapping[type]:
-                    tmp_conv_mapping[type].append(id)
+            if reverse:
+                for type_b in conv:
+                    for id_b in conv[type_b]:
+                        for type_a in self.__conv_mapping:
+                            for id_a in self.__conv_mapping[type_a]:
+                                if id_b in self.__conv_mapping[type_a][id_a][type_b]:
+                                    tmp_conv_mapping[type_a].append(id_a)
+            else:
+                for type_a in conv:
+                    for id_a in conv[type_a]:
+                        if id_a in self.__conv_mapping[type_a]:
+                            tmp_conv_mapping = self.__conv_mapping[type_a][id_a]
 
         return tmp_conv_mapping
 
@@ -37,67 +47,63 @@ class ConvMapping:
 
     # 添加会话映射
     def link_conv(
-        self, conv_a: Conv, conv_b: Conv
-    ) -> Dict[str, Dict[int, Dict[str, Dict[int, bool]]]]:
+        self, conv_a: Conv, conv_b: Conv, unilateral=False
+    ) -> Dict[str, Dict[int, Conv]]:
         result = {"user": {}, "group": {}}
         for type in result:
-            for id in conv_a[type] + conv_b[type]:
-                result[type][id] = {"user": {}, "group": {}}
-        for type_a in conv_a:
-            for id_a in conv_a[type_a]:
-                for type_b in conv_b:
-                    for id_b in conv_b[type_b]:
+            for id in conv_b[type] if unilateral else conv_a[type] + conv_b[type]:
+                result[type][id] = {"user": [], "group": []}
+        for type_b in conv_b:
+            for id_b in conv_b[type_b]:
+                for type_a in conv_a:
+                    for id_a in conv_a[type_a]:
                         if (
                             type_a == type_b
                             and id_a == id_b
                             or id_a not in self.__conv_mapping[type_a]
                             or id_b not in self.__conv_mapping[type_b]
                         ):
-                            result[type_a][id_a][type_b][id_b] = False
                             continue
-                        if id_b in self.__conv_mapping[type_a][id_a][type_b]:
-                            result[type_a][id_a][type_b][id_b] = False
-                        else:
+                        if id_b not in self.__conv_mapping[type_a][id_a][type_b]:
                             self.__conv_mapping[type_a][id_a][type_b].append(id_b)
-                            result[type_a][id_a][type_b][id_b] = True
-                        if id_a in self.__conv_mapping[type_b][id_b][type_a]:
-                            result[type_b][id_b][type_a][id_a] = False
-                        else:
+                            result[type_b][id_b][type_a].append(id_a)
+                        if (
+                            not unilateral
+                            and id_a not in self.__conv_mapping[type_b][id_b][type_a]
+                        ):
                             self.__conv_mapping[type_b][id_b][type_a].append(id_a)
-                            result[type_b][id_b][type_a][id_a] = True
+                            result[type_a][id_a][type_b].append(id_b)
         self.__dump()
         return result
 
     # 移除会话映射
     def unlink_conv(
-        self, conv_a: Conv, conv_b: Conv
-    ) -> Dict[str, Dict[int, Dict[str, Dict[int, bool]]]]:
+        self, conv_a: Conv, conv_b: Conv, unilateral=False
+    ) -> Dict[str, Dict[int, Conv]]:
         result = {"user": {}, "group": {}}
         for type in result:
-            for id in conv_a[type] + conv_b[type]:
-                result[type][id] = {"user": {}, "group": {}}
-        for type_a in conv_a:
-            for id_a in conv_a[type_a]:
-                for type_b in conv_b:
-                    for id_b in conv_b[type_b]:
+            for id in conv_b[type] if unilateral else conv_a[type] + conv_b[type]:
+                result[type][id] = {"user": [], "group": []}
+        for type_b in conv_b:
+            for id_b in conv_b[type_b]:
+                for type_a in conv_a:
+                    for id_a in conv_a[type_a]:
                         if (
                             type_a == type_b
                             and id_a == id_b
                             or id_a not in self.__conv_mapping[type_a]
                             or id_b not in self.__conv_mapping[type_b]
                         ):
-                            result[type_a][id_a][type_b][id_b] = False
                             continue
-                        if id_b not in self.__conv_mapping[type_a][id_a][type_b]:
-                            result[type_a][id_a][type_b][id_b] = False
-                        else:
+                        if id_b in self.__conv_mapping[type_a][id_a][type_b]:
                             self.__conv_mapping[type_a][id_a][type_b].remove(id_b)
-                            result[type_a][id_a][type_b][id_b] = True
-                        if id_a not in self.__conv_mapping[type_b][id_b][type_a]:
-                            result[type_b][id_b][type_a][id_a] = False
-                        else:
+                            result[type_b][id_b][type_a].append(id_a)
+                        if (
+                            not unilateral
+                            and id_a in self.__conv_mapping[type_b][id_b][type_a]
+                        ):
                             self.__conv_mapping[type_b][id_b][type_a].remove(id_a)
-                            result[type_b][id_b][type_a][id_a] = True
+                            result[type_a][id_a][type_b].append(id_b)
         self.__dump()
         return result
 
@@ -141,3 +147,10 @@ class ConvMapping:
             self.__path.open("w", encoding="utf-8"),
             allow_unicode=True,
         )
+
+
+print(
+    ConvMapping().unlink_conv(
+        {"user": [1290541225], "group": []}, {"user": [1351483470], "group": []}, True
+    )
+)

@@ -6,40 +6,38 @@ puppet_parser = ArgumentParser("puppet")
 
 puppet_subparsers = puppet_parser.add_subparsers()
 
-link_parser = puppet_subparsers.add_parser(
-    "link", help="Link convsations with another what you want"
+link_parser = puppet_subparsers.add_parser("link", help="Link conv_a to conv_b")
+link_parser.add_argument(
+    "-u", "-ua", "--user-a", action="store", nargs="+", default=[], type=int
 )
 link_parser.add_argument(
-    "-ua", "--user-a", action="store", nargs="*", default=[], type=int
+    "-g", "-ga", "--group-a", action="store", nargs="+", default=[], type=int
 )
 link_parser.add_argument(
-    "-ga", "--group-a", action="store", nargs="*", default=[], type=int
+    "-ub", "--user-b", action="store", nargs="*", default=[], type=int
 )
 link_parser.add_argument(
-    "-u", "-ub", "--user-b", action="store", nargs="+", default=[], type=int
-)
-link_parser.add_argument(
-    "-g", "-gb", "--group-b", action="store", nargs="+", default=[], type=int
+    "-gb", "--group-b", action="store", nargs="*", default=[], type=int
 )
 link_parser.add_argument("-q", "--quiet", action="store_true")
+link_parser.add_argument("-U", "--unilateral", action="store_true")
 link_parser.set_defaults(handle=handle_link)
 
-unlink_parser = puppet_subparsers.add_parser(
-    "unlink", help="Unlink current conv_parser"
+unlink_parser = puppet_subparsers.add_parser("unlink", help="Unlink current conv")
+unlink_parser.add_argument(
+    "-u", "-ua", "--user-a", action="store", nargs="*", default=[], type=int
 )
 unlink_parser.add_argument(
-    "-ua", "--user-a", action="store", nargs="+", default=[], type=int
+    "-g", "-ga", "--group-a", action="store", nargs="*", default=[], type=int
 )
 unlink_parser.add_argument(
-    "-ga", "--group-a", action="store", nargs="+", default=[], type=int
+    "-ub", "--user-b", action="store", nargs="*", default=[], type=int
 )
 unlink_parser.add_argument(
-    "-u", "-ub", "--user-b", action="store", nargs="+", default=[], type=int
-)
-unlink_parser.add_argument(
-    "-g", "-gb", "--group-b", action="store", nargs="+", default=[], type=int
+    "-gb", "--group-b", action="store", nargs="*", default=[], type=int
 )
 unlink_parser.add_argument("-q", "--quiet", action="store_true")
+unlink_parser.add_argument("-U", "--unilateral", action="store_true")
 unlink_parser.set_defaults(handle=handle_unlink)
 
 list_parser = puppet_subparsers.add_parser("list")
