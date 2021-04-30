@@ -1,7 +1,7 @@
 from time import strftime, localtime
 from argparse import Namespace as ArgNamespace
 
-from .data import *
+from nonebot_plugin_puppet.mapping import *
 
 
 class Namespace(ArgNamespace):
