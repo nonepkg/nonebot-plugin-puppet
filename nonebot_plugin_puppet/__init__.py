@@ -1,4 +1,3 @@
-from nonebot_plugin_puppet.data import ConvMapping
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import on_message, on_shell_command
 from nonebot.typing import T_State
@@ -11,7 +10,8 @@ from nonebot.adapters.cqhttp import (
     unescape,
 )
 
-from .parser import Namespace, puppet_parser, handle_transmit
+from nonebot_plugin_puppet.parser import puppet_parser
+from nonebot_plugin_puppet.handle import Namespace, Handle, ConvMapping
 
 puppet_command = on_shell_command(
     "puppet", parser=puppet_parser, priority=1, permission=SUPERUSER
@@ -40,7 +40,7 @@ async def _(bot: Bot, event: MessageEvent, state: T_State):
         args.message = unescape(args.message)
 
     if hasattr(args, "handle"):
-        args = args.handle(args)
+        args = getattr(Handle, args.handle)(args)
         for type in args.conv_r:
             for id in args.conv_r[type]:
                 try:
@@ -51,6 +51,8 @@ async def _(bot: Bot, event: MessageEvent, state: T_State):
                     )
                 except:
                     pass
+    else:
+        await bot.send(event, args.message)
 
 
 @puppet_message.handle()
@@ -63,7 +65,7 @@ async def _(bot: Bot, event: MessageEvent):
     )
 
     args = Namespace()
-    args.handle = handle_transmit
+    args.handle = "message"
 
     args.conv_s = {
         "user": [event.user_id] if isinstance(event, PrivateMessageEvent) else [],
@@ -86,7 +88,7 @@ async def _(bot: Bot, event: MessageEvent):
     args.message = unescape(str(event.get_message()))
 
     if hasattr(args, "handle"):
-        args = args.handle(args)
+        args = getattr(Handle, args.handle)(args)
         for type in args.conv_r:
             for id in args.conv_r[type]:
                 try:

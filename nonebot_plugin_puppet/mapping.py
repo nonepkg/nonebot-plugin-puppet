@@ -1,4 +1,4 @@
-import yaml
+from yaml import safe_load, dump
 from pathlib import Path
 from typing import List, Dict
 
@@ -132,9 +132,7 @@ class ConvMapping:
     # 导入会话映射
     def __load(self) -> "ConvMapping":
         try:
-            self.__conv_mapping = yaml.safe_load(
-                self.__path.open("r", encoding="utf-8")
-            )
+            self.__conv_mapping = safe_load(self.__path.open("r", encoding="utf-8"))
         except FileNotFoundError:
             self.__conv_mapping = {"user": {}, "group": {}}
         return self
@@ -142,7 +140,7 @@ class ConvMapping:
     # 导出会话映射
     def __dump(self):
         self.__path.parent.mkdir(parents=True, exist_ok=True)
-        yaml.dump(
+        dump(
             self.__conv_mapping,
             self.__path.open("w", encoding="utf-8"),
             allow_unicode=True,
