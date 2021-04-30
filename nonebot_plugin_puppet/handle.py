@@ -79,26 +79,32 @@ def handle_unlink(args: Namespace) -> Namespace:
 
 
 def handle_list(args: Namespace):
-
-    conv = (
+    conv_a = (
         ConvMapping().get_conv({"user": args.user, "group": args.group})
         if args.user or args.group
         else ConvMapping().get_conv(args.conv_s, True)
     )
+    conv_b = (
+        ConvMapping().get_conv({"user": args.user, "group": args.group})
+        if args.user or args.group
+        else ConvMapping().get_conv(args.conv_s)
+    )
 
     for type_s in args.conv_s:
         for id_s in args.conv_s[type_s]:
-            if conv["user"] or conv["group"]:
-                args.conv_r[type_s][
-                    id_s
-                ] = f"链接到{'用户' if type_s == 'user' else '群'} {id_s} 的会话列表为:"
-                for type in conv:
-                    if conv[type]:
-                        args.conv_r[type_s][id_s] += (
-                            "\n用户:" if type == "user" else "\n群:"
-                        )
-                        for id in conv[type]:
-                            args.conv_r[type_s][id_s] += "\n" + str(id)
+            args.conv_r[type_s][id_s] = ""
+            for type in conv_a:
+                if conv_a[type] or conv_b[type]:
+                    args.conv_r[type_s][id_s] += "\n用户:" if type == "user" else "\n群:"
+                    for id in conv_a[type] + conv_b[type]:
+                        args.conv_r[type_s][
+                            id_s
+                        ] += f"\n{'<' if id in conv_a[type] else '-'}--{'>' if id in conv_b[type] else '-'} {id}"
+            if args.conv_r[type_s][id_s]:
+                args.conv_r[type_s][id_s] = (
+                    f"{'用户' if type_s == 'user' else '群'} {id_s} 的会话列表为:"
+                    + args.conv_r[type_s][id_s]
+                )
 
     return args
 
