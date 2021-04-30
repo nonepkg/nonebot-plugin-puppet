@@ -41,7 +41,7 @@ git clone https://github.com/Jigsaw111/nonebot_plugin_puppet.git
 
 **不建议同时链接多个会话（尤其是大群），如被风控概不负责**
 
-- `puppet link` 链接会话
+- `puppet ln` 链接会话
 - - `-u user_id..., -ua user_id..., --user-a user_id...` 可选参数，指定源会话的 QQ 号
 - - `-g group_id..., -ga group_id..., --group-a group_id...` 可选参数，指定源会话的群号
 - - 至少需要设置一个
@@ -50,7 +50,7 @@ git clone https://github.com/Jigsaw111/nonebot_plugin_puppet.git
 - - 不设置的话默认为当前会话的 QQ 号/群号
 - - `-q, --quiet` 可选参数，静默链接（不发送链接成功消息）
 - - `-U, --unilateral` 可选参数，单方面链接
-- `puppet unlink` 取消链接会话
+- `puppet rm` 删除会话链接
 - - `-u user_id..., -ua user_id..., --user-a user_id...` 可选参数，指定源会话的 QQ 号
 - - `-g group_id..., -ga group_id..., --group-a group_id...` 可选参数，指定源会话的群号
 - - 不设置的话，默认为当前会话链接的所有会话
@@ -59,7 +59,7 @@ git clone https://github.com/Jigsaw111/nonebot_plugin_puppet.git
 - - 不设置的话默认为当前会话的 QQ 号/群号
 - - `-q, --quiet` 可选参数，静默链接（不发送解除链接成功消息）
 - - `-U, --unilateral` 可选参数，单方面解除链接
-- `puppet list` 查看链接到当前会话的会话列表
+- `puppet ls` 查看链接到当前会话的会话列表
 - - `-u user_id, --user user_id` 互斥参数，指定会话的 QQ 号
 - - `-g group_id, --group group_id` 互斥参数，指定会话的群号
 - - 不设置的话默认为当前会话的 QQ 号/群号

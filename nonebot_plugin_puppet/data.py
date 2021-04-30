@@ -147,10 +147,3 @@ class ConvMapping:
             self.__path.open("w", encoding="utf-8"),
             allow_unicode=True,
         )
-
-
-print(
-    ConvMapping().unlink_conv(
-        {"user": [1290541225], "group": []}, {"user": [1351483470], "group": []}, True
-    )
-)
