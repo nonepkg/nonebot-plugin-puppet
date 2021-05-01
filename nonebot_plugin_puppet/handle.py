@@ -130,14 +130,18 @@ class Handle:
     @classmethod
     def send(cls, args: Namespace) -> Namespace:
         if not args.all:
-            args.conv_r = (
+            conv = (
                 {"user": args.user, "group": args.group}
                 if args.user or args.group
                 else ConvMapping().get_conv(args.conv_s)
             )
         else:
-            args.conv_r = ConvMapping().get_conv()
-            args.conv_r["user"] = []
+            conv = ConvMapping().get_conv()
+            conv["user"] = {}
+
+        for type in conv:
+            for id in conv[type]:
+                args.conv_r[type][id] = args.message
 
         return args
 
