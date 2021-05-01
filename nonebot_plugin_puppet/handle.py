@@ -1,20 +1,22 @@
-from time import strftime, localtime
-from typing import List
+from typing import List, Set
 from argparse import Namespace as ArgNamespace
 
 from nonebot_plugin_puppet.mapping import Conv, ConvMapping
 
+# from nonebot_plugin_puppet.request import ReqList
+
 
 class Namespace(ArgNamespace):
+    user: List[int] = []
+    group: List[int] = []
     user_a: List[int] = []
     group_a: List[int] = []
     user_b: List[int] = []
     group_b: List[int] = []
-    user: List[int] = []
-    group: List[int] = []
-    message: str
     conv_s: Conv
     conv_r: Conv
+    handle: str
+    message: str
 
 
 class Handle:
@@ -127,41 +129,22 @@ class Handle:
 
     @classmethod
     def send(cls, args: Namespace) -> Namespace:
-
-        conv = (
-            {"user": args.user, "group": args.group}
-            if args.user or args.group
-            else ConvMapping().get_conv(args.conv_s)
-        )
-
-        if args.all:
-            conv = ConvMapping().get_conv()
-            conv["user"] = []
-
-        for type in conv:
-            for id in conv[type]:
-                args.conv_r[type][id] = args.message
-
-        return args
-
-    @classmethod
-    def msg(cls, args: Namespace) -> Namespace:
-        return cls.message(args)
-
-    @classmethod
-    def message(cls, args: Namespace) -> Namespace:
-
-        conv = ConvMapping().get_conv(args.conv_s)
-
-        if args.is_superuser:
-            args.group = ""
-            args.sender = ""
-        else:
-            args.sender = (
-                f"{args.name} {strftime('%Y-%m-%d %H:%M:%S',localtime(args.time))} \n"
+        if not args.all:
+            args.conv_r = (
+                {"user": args.user, "group": args.group}
+                if args.user or args.group
+                else ConvMapping().get_conv(args.conv_s)
             )
+        else:
+            args.conv_r = ConvMapping().get_conv()
+            args.conv_r["user"] = []
 
-        for type in conv:
-            for id in conv[type]:
-                args.conv_r[type][id] = args.group + args.sender + args.message
         return args
+
+    @classmethod
+    def aprv(cls, args: Namespace) -> Namespace:
+        return cls.approve(args)
+
+    @classmethod
+    def approve(cls, args: Namespace) -> Namespace:
+        pass

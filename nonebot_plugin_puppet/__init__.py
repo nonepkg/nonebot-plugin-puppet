@@ -1,25 +1,29 @@
+from time import strftime, localtime
 from nonebot.permission import SUPERUSER
-from nonebot.plugin import on_message, on_shell_command
+from nonebot.plugin import on_message, on_notice, on_request, on_shell_command
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import (
     Bot,
     Message,
+    RequestEvent,
+    GroupRequestEvent,
+    NoticeEvent,
     MessageEvent,
     GroupMessageEvent,
     PrivateMessageEvent,
     unescape,
 )
 
-from nonebot_plugin_puppet.parser import puppet_parser
+from nonebot_plugin_puppet.parser import parser
 from nonebot_plugin_puppet.handle import Namespace, Handle, ConvMapping
 
-puppet_command = on_shell_command(
-    "puppet", parser=puppet_parser, priority=1, permission=SUPERUSER
-)
-puppet_message = on_message(priority=10, block=False)
+command = on_shell_command("puppet", parser=parser, priority=1, permission=SUPERUSER)
+message = on_message(priority=10, block=False)
+request = on_request(priority=10, block=False)
+notice = on_notice(priority=10, block=False)
 
 
-@puppet_command.handle()
+@command.handle()
 async def _(bot: Bot, event: MessageEvent, state: T_State):
     ConvMapping().update_conv(
         {
@@ -55,7 +59,7 @@ async def _(bot: Bot, event: MessageEvent, state: T_State):
         await bot.send(event, args.message)
 
 
-@puppet_message.handle()
+@message.handle()
 async def _(bot: Bot, event: MessageEvent):
     ConvMapping().update_conv(
         {
@@ -64,38 +68,89 @@ async def _(bot: Bot, event: MessageEvent):
         },
     )
 
-    args = Namespace()
-    args.handle = "message"
-
-    args.conv_s = {
+    conv_s = {
         "user": [event.user_id] if isinstance(event, PrivateMessageEvent) else [],
         "group": [event.group_id] if isinstance(event, GroupMessageEvent) else [],
     }
-    args.conv_r = {"user": {}, "group": {}}
+    conv_r = ConvMapping().get_conv(conv_s)
 
-    args.group = (
-        ""
-        if isinstance(event, PrivateMessageEvent)
-        else f"{(await bot.get_group_info(group_id=event.group_id))['group_name']}({event.group_id})\n"
-    )
-    args.name = (
-        event.sender.card
-        if isinstance(event, GroupMessageEvent) and event.sender.card
-        else event.sender.nickname
-    )
-    args.time = event.time
-    args.is_superuser = str(event.user_id) in bot.config.superusers
-    args.message = unescape(str(event.get_message()))
+    header = ""
+    sender = ""
+    message = unescape(str(event.get_message()))
+    if str(event.user_id) not in bot.config.superusers:
+        if isinstance(event, GroupMessageEvent):
+            header = (await bot.get_group_info(group_id=event.group_id))[
+                "group_name"
+            ] + f" ({event.group_id})\n"
+        sender = (
+            event.sender.card
+            if isinstance(event, GroupMessageEvent) and event.sender.card
+            else event.sender.nickname
+        ) + f" {strftime('%Y-%m-%d %H:%M:%S', localtime(event.time))} \n"
+    message = header + sender + message
 
-    if hasattr(args, "handle"):
-        args = getattr(Handle, args.handle)(args)
-        for type in args.conv_r:
-            for id in args.conv_r[type]:
-                try:
-                    await bot.send_msg(
-                        user_id=id if type == "user" else None,
-                        group_id=id if type == "group" else None,
-                        message=Message(args.conv_r[type][id]),
-                    )
-                except:
-                    pass
+    for type in conv_r:
+        for id in conv_r[type]:
+            try:
+                await bot.send_msg(
+                    user_id=id if type == "user" else None,
+                    group_id=id if type == "group" else None,
+                    message=Message(message),
+                )
+            except:
+                pass
+
+
+@request.handle()
+async def _(bot: Bot, event: RequestEvent):
+    conv_s = {
+        "user": [event.user_id],
+        "group": [event.group_id] if isinstance(event, GroupRequestEvent) else [],
+    }
+    type = (
+        event.sub_type if isinstance(event, GroupRequestEvent) else event.request_type
+    )
+    conv_r = (
+        ConvMapping().get_conv(conv_s)
+        if type == "add"
+        else {"group": [], "user": [int(i) for i in bot.config.superusers]}
+    )
+
+    if str(event.user_id) not in bot.config.superusers:
+        if type != "friend":
+            header = (await bot.get_group_info(group_id=event.group_id))[
+                "group_name"
+            ] + f" ({event.group_id})\n"
+        else:
+            header = ""
+        sender = (await bot.get_stranger_info(user_id=event.user_id))[
+            "nickname"
+        ] + f" {strftime('%Y-%m-%d %H:%M:%S', localtime(event.time))} \n"
+        message = (
+            ("邀请" if type == "invite" else "请求")
+            + ("添加为好友" if type == "friend" else "加入群聊")
+            + f" ({event.flag})"
+            + (f"\n备注：{event.comment}" if event.comment else "")
+        )
+        message = header + sender + message
+    else:
+        try:
+            await event.approve(bot)
+        finally:
+            return
+
+    for type in conv_r:
+        for id in conv_r[type]:
+            try:
+                await bot.send_msg(
+                    user_id=id if type == "user" else None,
+                    group_id=id if type == "group" else None,
+                    message=Message(message),
+                )
+            except:
+                pass
+
+
+@notice.handle()
+async def _(bot: Bot, event: NoticeEvent):
+    pass
