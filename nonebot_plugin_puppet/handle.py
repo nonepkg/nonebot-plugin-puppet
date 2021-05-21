@@ -2,7 +2,6 @@ from typing import List, Set
 from argparse import Namespace as ArgNamespace
 
 from nonebot_plugin_puppet.mapping import Conv, ConvMapping
-
 # from nonebot_plugin_puppet.request import ReqList
 
 
@@ -22,7 +21,7 @@ class Namespace(ArgNamespace):
 class Handle:
     @classmethod
     def ln(cls, args: Namespace) -> Namespace:
-        return cls.link(Namespace)
+        return cls.link(args)
 
     @classmethod
     def link(cls, args: Namespace) -> Namespace:
@@ -55,7 +54,7 @@ class Handle:
 
     @classmethod
     def rm(cls, args: Namespace) -> Namespace:
-        return cls.unlink(Namespace)
+        return cls.unlink(args)
 
     @classmethod
     def unlink(cls, args: Namespace) -> Namespace:
