@@ -115,9 +115,10 @@ class Handle:
                             "\n用户:" if type == "user" else "\n群:"
                         )
                         for id in conv_a[type] + conv_b[type]:
-                            args.conv_r[type_s][
-                                id_s
-                            ] += f"\n{'<' if id in conv_a[type] else '-'}--{'>' if id in conv_b[type] else '-'} {id}"
+                            if id not in args.conv_r[type_s][id_s]:
+                                args.conv_r[type_s][
+                                    id_s
+                                ] += f"\n{'<' if id in conv_a[type] else '-'}--{'>' if id in conv_b[type] else '-'} {id}"
                 if args.conv_r[type_s][id_s]:
                     args.conv_r[type_s][id_s] = (
                         f"{'用户' if type_s == 'user' else '群'} {id_s} 的会话列表为:"
