@@ -33,7 +33,7 @@ class Handle:
             else args.conv_s
         )
 
-        result = ConvMapping().link_conv(conv_a, conv_b, args.unilateral)
+        result = ConvMapping().link_conv(conv_a, conv_b, args.unidirect)
 
         if not args.quiet:
             for type_b in result:
@@ -70,7 +70,7 @@ class Handle:
             else args.conv_s
         )
 
-        result = ConvMapping().unlink_conv(conv_a, conv_b, args.unilateral)
+        result = ConvMapping().unlink_conv(conv_a, conv_b, args.unidirect)
 
         if not args.quiet:
             for type_b in result:

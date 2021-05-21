@@ -47,11 +47,11 @@ class ConvMapping:
 
     # 添加会话映射
     def link_conv(
-        self, conv_a: Conv, conv_b: Conv, unilateral=False
+        self, conv_a: Conv, conv_b: Conv, unidirect=False
     ) -> Dict[str, Dict[int, Conv]]:
         result = {"user": {}, "group": {}}
         for type in result:
-            for id in conv_b[type] if unilateral else conv_a[type] + conv_b[type]:
+            for id in conv_b[type] if unidirect else conv_a[type] + conv_b[type]:
                 result[type][id] = {"user": [], "group": []}
         for type_b in conv_b:
             for id_b in conv_b[type_b]:
@@ -68,7 +68,7 @@ class ConvMapping:
                             self.__conv_mapping[type_a][id_a][type_b].append(id_b)
                             result[type_b][id_b][type_a].append(id_a)
                         if (
-                            not unilateral
+                            not unidirect
                             and id_a not in self.__conv_mapping[type_b][id_b][type_a]
                         ):
                             self.__conv_mapping[type_b][id_b][type_a].append(id_a)
@@ -78,11 +78,11 @@ class ConvMapping:
 
     # 移除会话映射
     def unlink_conv(
-        self, conv_a: Conv, conv_b: Conv, unilateral=False
+        self, conv_a: Conv, conv_b: Conv, unidirect=False
     ) -> Dict[str, Dict[int, Conv]]:
         result = {"user": {}, "group": {}}
         for type in result:
-            for id in conv_b[type] if unilateral else conv_a[type] + conv_b[type]:
+            for id in conv_b[type] if unidirect else conv_a[type] + conv_b[type]:
                 result[type][id] = {"user": [], "group": []}
         for type_b in conv_b:
             for id_b in conv_b[type_b]:
@@ -99,7 +99,7 @@ class ConvMapping:
                             self.__conv_mapping[type_a][id_a][type_b].remove(id_b)
                             result[type_b][id_b][type_a].append(id_a)
                         if (
-                            not unilateral
+                            not unidirect
                             and id_a in self.__conv_mapping[type_b][id_b][type_a]
                         ):
                             self.__conv_mapping[type_b][id_b][type_a].remove(id_a)

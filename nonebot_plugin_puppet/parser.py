@@ -20,7 +20,7 @@ link_parent.add_argument(
     "-gb", "--group-b", action="store", nargs="*", default=[], type=int
 )
 link_parent.add_argument("-q", "--quiet", action="store_true")
-link_parent.add_argument("-U", "--unilateral", action="store_true")
+link_parent.add_argument("-U", "--unidirect", action="store_true")
 subparsers.add_parser("ln", parents=[link_parent])
 subparsers.add_parser("link", parents=[link_parent])
 
