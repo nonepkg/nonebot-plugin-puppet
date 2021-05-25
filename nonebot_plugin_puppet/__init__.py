@@ -44,7 +44,7 @@ async def _(bot: Bot, event: MessageEvent, state: T_State):
         if hasattr(args, "message"):
             args.message = unescape(args.message)
         args = getattr(Handle, args.handle)(args)
-        if hasattr(args, "req"):
+        if hasattr(args, "req_r"):
             for type in args.req:
                 for flag in args.req[type]:
                     try:
