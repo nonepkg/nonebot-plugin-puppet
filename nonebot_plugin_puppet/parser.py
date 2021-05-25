@@ -101,3 +101,6 @@ reject_parent.add_argument(
 reject_parent.add_argument("-a", "--all", action="store_true")
 subparsers.add_parser("rej", parents=[reject_parent])
 subparsers.add_parser("reject", parents=[reject_parent])
+
+send = subparsers.add_parser("exit", help="Exit group")
+send.add_argument("-g", "--group", action="store", nargs="+", default=[], type=int)

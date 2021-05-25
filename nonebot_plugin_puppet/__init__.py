@@ -70,6 +70,12 @@ async def _(bot: Bot, event: MessageEvent, state: T_State):
                     )
                 except:
                     pass
+        if args.handle == "exit":
+            for id in args.group:
+                try:
+                    await bot.set_group_leave(group_id=id)
+                except:
+                    pass
     else:
         await bot.send(event, args.message)
 

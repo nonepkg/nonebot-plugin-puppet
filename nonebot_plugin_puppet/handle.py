@@ -138,7 +138,7 @@ class Handle:
     def approve(cls, args: Namespace) -> Namespace:
         req = ReqList().get_req()
         if args.all:
-            args.flag = req["friend"]+req["invite"]+req["add"]
+            args.flag = req["friend"] + req["invite"] + req["add"]
         req_r = {"friend": {}, "invite": {}, "add": {}}
         for type in req:
             for flag in req[type]:
@@ -160,7 +160,7 @@ class Handle:
     def reject(cls, args: Namespace) -> Namespace:
         req = ReqList().get_req()
         if args.all:
-            args.flag = req["friend"]+req["invite"]+req["add"]
+            args.flag = req["friend"] + req["invite"] + req["add"]
         req_r = {"friend": {}, "invite": {}, "add": {}}
         for type in req:
             for flag in req[type]:
@@ -172,4 +172,12 @@ class Handle:
             for id_s in args.conv_s[type_s]:
                 args.conv_r[type_s][id_s] = "已拒绝请求！"
 
+        return args
+
+    @classmethod
+    def exit(cls, args: Namespace) -> Namespace:
+        conv = {"user": [], "group": args.group}
+        for type in conv:
+            for id in conv[type]:
+                args.conv_r[type][id] = f"正在退出群 {id} !"
         return args
