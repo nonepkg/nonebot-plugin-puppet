@@ -1,26 +1,27 @@
 from time import strftime, localtime
 from nonebot.permission import SUPERUSER
-from nonebot.plugin import on_message, on_notice, on_request, on_shell_command
+from nonebot.plugin import on_message, on_request, on_shell_command
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import (
     Bot,
     Message,
     RequestEvent,
+    FriendRequestEvent,
     GroupRequestEvent,
-    NoticeEvent,
     MessageEvent,
     GroupMessageEvent,
     PrivateMessageEvent,
     unescape,
 )
 
-from nonebot_plugin_puppet.parser import parser
-from nonebot_plugin_puppet.handle import Namespace, Handle, ConvMapping
+from nonebot_plugin_puppet.parser import parser, Namespace
+from nonebot_plugin_puppet.handle import Handle
+from nonebot_plugin_puppet.mapping import ConvMapping
+from nonebot_plugin_puppet.request import ReqList
 
 command = on_shell_command("puppet", parser=parser, priority=1, permission=SUPERUSER)
 message = on_message(priority=10, block=False)
 request = on_request(priority=10, block=False)
-notice = on_notice(priority=10, block=False)
 
 
 @command.handle()
@@ -33,18 +34,32 @@ async def _(bot: Bot, event: MessageEvent, state: T_State):
     )
 
     args: Namespace = state["args"]
-
     args.conv_s = {
         "user": [event.user_id] if isinstance(event, PrivateMessageEvent) else [],
         "group": [event.group_id] if isinstance(event, GroupMessageEvent) else [],
     }
     args.conv_r = {"user": {}, "group": {}}
 
-    if hasattr(args, "message"):
-        args.message = unescape(args.message)
-
     if hasattr(args, "handle"):
+        if hasattr(args, "message"):
+            args.message = unescape(args.message)
         args = getattr(Handle, args.handle)(args)
+        if hasattr(args, "req"):
+            for type in args.req:
+                for flag in args.req[type]:
+                    try:
+                        if type == "friend":
+                            await bot.set_friend_add_request(
+                                flag=flag, approve=args.req[type][flag]
+                            )
+                        elif type in ["add", "invite"]:
+                            await bot.set_group_add_request(
+                                flag=flag,
+                                sub_type=type,
+                                approve=args.req[type][flag],
+                            )
+                    except:
+                        pass
         for type in args.conv_r:
             for id in args.conv_r[type]:
                 try:
@@ -104,53 +119,58 @@ async def _(bot: Bot, event: MessageEvent):
 @request.handle()
 async def _(bot: Bot, event: RequestEvent):
     conv_s = {
-        "user": [event.user_id],
+        "user": [event.user_id] if isinstance(event, FriendRequestEvent) else [],
         "group": [event.group_id] if isinstance(event, GroupRequestEvent) else [],
     }
     type = (
         event.sub_type if isinstance(event, GroupRequestEvent) else event.request_type
+    )
+    ReqList().add_req(
+        {
+            "friend": [event.flag] if type == "friend" else [],
+            "invite": [event.flag] if type == "invite" else [],
+            "add": [event.flag] if type == "add" else [],
+        }
     )
     conv_r = (
         ConvMapping().get_conv(conv_s)
         if type == "add"
         else {"group": [], "user": [int(i) for i in bot.config.superusers]}
     )
+    if type == "add":
+        conv_r["group"].append(event.group_id)
 
     if str(event.user_id) not in bot.config.superusers:
-        if type != "friend":
-            header = (await bot.get_group_info(group_id=event.group_id))[
-                "group_name"
-            ] + f" ({event.group_id})\n"
-        else:
-            header = ""
+        header = f"【请求】{event.flag}"
         sender = (await bot.get_stranger_info(user_id=event.user_id))[
             "nickname"
         ] + f" {strftime('%Y-%m-%d %H:%M:%S', localtime(event.time))} \n"
         message = (
             ("邀请" if type == "invite" else "请求")
-            + ("添加为好友" if type == "friend" else "加入群聊")
+            + (
+                "添加为好友"
+                if type == "friend"
+                else "加入群聊"
+                + (await bot.get_group_info(group_id=event.group_id))["group_name"]
+                + f" ({event.group_id})\n"
+            )
             + f" ({event.flag})"
             + (f"\n备注：{event.comment}" if event.comment else "")
         )
         message = header + sender + message
+
+        for type in conv_r:
+            for id in conv_r[type]:
+                try:
+                    await bot.send_msg(
+                        user_id=id if type == "user" else None,
+                        group_id=id if type == "group" else None,
+                        message=Message(message),
+                    )
+                except:
+                    pass
     else:
         try:
             await event.approve(bot)
-        finally:
-            return
-
-    for type in conv_r:
-        for id in conv_r[type]:
-            try:
-                await bot.send_msg(
-                    user_id=id if type == "user" else None,
-                    group_id=id if type == "group" else None,
-                    message=Message(message),
-                )
-            except:
-                pass
-
-
-@notice.handle()
-async def _(bot: Bot, event: NoticeEvent):
-    pass
+        except:
+            pass

@@ -1,4 +1,28 @@
+from argparse import Namespace as BaseNamespace
+from typing import List
+
 from nonebot.rule import ArgumentParser
+
+from nonebot_plugin_puppet.mapping import Conv
+from nonebot_plugin_puppet.request import Req
+
+
+class Namespace(BaseNamespace):
+    user: List[int] = []
+    group: List[int] = []
+    user_a: List[int] = []
+    group_a: List[int] = []
+    user_b: List[int] = []
+    group_b: List[int] = []
+    conv_s: Conv
+    conv_r: Conv
+    req: Req
+    handle: str
+    message: str
+    quiet: bool
+    all: bool
+    unidirect: bool
+
 
 parser = ArgumentParser("puppet")
 
@@ -59,17 +83,21 @@ send.add_argument("-u", "--user", action="store", nargs="+", default=[], type=in
 send.add_argument("-g", "--group", action="store", nargs="+", default=[], type=int)
 send.add_argument("-a", "--all", action="store_true")
 
-aprove_parent = subparsers.add_parser("approve", help="Aprove request", add_help=False)
-aprove_parent.add_argument("message", action="store")
-aprove_parent.add_argument(
+approve_parent = subparsers.add_parser(
+    "approve", help="Approve request", add_help=False
+)
+approve_parent.add_argument("message", action="store")
+approve_parent.add_argument(
     "-f", "--flag", action="store", nargs="+", default=[], type=str
 )
-aprove_parent.add_argument(
-    "-u", "--user", action="store", nargs="+", default=[], type=int
+approve_parent.add_argument("-a", "--all", action="store_true")
+subparsers.add_parser("aprv", parents=[approve_parent])
+subparsers.add_parser("approve", parents=[approve_parent])
+
+reject_parent = subparsers.add_parser("reject", help="Reject request", add_help=False)
+reject_parent.add_argument(
+    "-f", "--flag", action="store", nargs="+", default=[], type=str
 )
-aprove_parent.add_argument(
-    "-g", "--group", action="store", nargs="+", default=[], type=int
-)
-aprove_parent.add_argument("-a", "--all", action="store_true")
-subparsers.add_parser("aprv", parents=[aprove_parent])
-subparsers.add_parser("approve", parents=[aprove_parent])
+reject_parent.add_argument("-a", "--all", action="store_true")
+subparsers.add_parser("rej", parents=[reject_parent])
+subparsers.add_parser("reject", parents=[reject_parent])

@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "nonebot_plugin_puppet"
-version = "0.2.0-alpha.4"
+version = "0.2.0-alpha.5"
 description = "Make Nonebot your puppet"
 authors = ["Jigsaw <j1g5aw@foxmail.com>"]
-license = "MIT"
+license = "AGPL-3.0-only"
 readme = "README.md"
 homepage = "https://github.com/Jigsaw111/nonebot_plugin_puppet"
 repository = "https://github.com/Jigsaw111/nonebot_plugin_puppet"

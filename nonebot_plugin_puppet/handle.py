@@ -1,21 +1,6 @@
-from typing import List, Set
-from argparse import Namespace as ArgNamespace
-
-from nonebot_plugin_puppet.mapping import Conv, ConvMapping
-# from nonebot_plugin_puppet.request import ReqList
-
-
-class Namespace(ArgNamespace):
-    user: List[int] = []
-    group: List[int] = []
-    user_a: List[int] = []
-    group_a: List[int] = []
-    user_b: List[int] = []
-    group_b: List[int] = []
-    conv_s: Conv
-    conv_r: Conv
-    handle: str
-    message: str
+from nonebot_plugin_puppet.parser import Namespace
+from nonebot_plugin_puppet.mapping import ConvMapping
+from nonebot_plugin_puppet.request import ReqList
 
 
 class Handle:
@@ -151,4 +136,40 @@ class Handle:
 
     @classmethod
     def approve(cls, args: Namespace) -> Namespace:
-        pass
+        req = ReqList().get_req()
+        if args.all:
+            args.flag = req["friend"]+req["invite"]+req["add"]
+        req_r = {"friend": {}, "invite": {}, "add": {}}
+        for type in req:
+            for flag in req[type]:
+                if flag in args.flag:
+                    req_r[type][flag] = True
+        ReqList().remove_req(req)
+
+        for type_s in args.conv_s:
+            for id_s in args.conv_s[type_s]:
+                args.conv_r[type_s][id_s] = "已同意请求！"
+
+        return args
+
+    @classmethod
+    def rej(cls, args: Namespace) -> Namespace:
+        return cls.reject(args)
+
+    @classmethod
+    def reject(cls, args: Namespace) -> Namespace:
+        req = ReqList().get_req()
+        if args.all:
+            args.flag = req["friend"]+req["invite"]+req["add"]
+        req_r = {"friend": {}, "invite": {}, "add": {}}
+        for type in req:
+            for flag in req[type]:
+                if flag in args.flag:
+                    req_r[type][flag] = False
+        ReqList().remove_req(req)
+
+        for type_s in args.conv_s:
+            for id_s in args.conv_s[type_s]:
+                args.conv_r[type_s][id_s] = "已拒绝请求！"
+
+        return args
