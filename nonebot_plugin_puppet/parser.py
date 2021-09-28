@@ -86,7 +86,6 @@ send.add_argument("-a", "--all", action="store_true")
 approve_parent = subparsers.add_parser(
     "approve", help="Approve request", add_help=False
 )
-approve_parent.add_argument("message", action="store")
 approve_parent.add_argument(
     "-f", "--flag", action="store", nargs="+", default=[], type=str
 )
