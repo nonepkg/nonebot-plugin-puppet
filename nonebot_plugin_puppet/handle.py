@@ -144,7 +144,8 @@ class Handle:
             for flag in req[type]:
                 if flag in args.flag:
                     req_r[type][flag] = True
-        ReqList().remove_req(req)
+        ReqList().remove_req(req_r)
+        args.req = req_r
 
         for type_s in args.conv_s:
             for id_s in args.conv_s[type_s]:
@@ -166,7 +167,8 @@ class Handle:
             for flag in req[type]:
                 if flag in args.flag:
                     req_r[type][flag] = False
-        ReqList().remove_req(req)
+        args.req = req_r
+        ReqList().remove_req(req_r)
 
         for type_s in args.conv_s:
             for id_s in args.conv_s[type_s]:
