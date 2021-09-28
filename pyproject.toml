@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot_plugin_puppet"
-version = "0.2.0-alpha.6"
+version = "0.2.0"
 description = "Make Nonebot your puppet"
 authors = ["Jigsaw <j1g5aw@foxmail.com>"]
 license = "AGPL-3.0-only"
@@ -14,7 +14,8 @@ nonebot2 = "^2.0.0-alpha.11"
 nonebot-adapter-cqhttp = "^2.0.0a11.post2"
 
 [tool.poetry.dev-dependencies]
-nb-cli = "^0.4.1"
+nb-cli = "^0.5.0"
+black = {version = "^21.9b0", allow-prereleases = true}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
