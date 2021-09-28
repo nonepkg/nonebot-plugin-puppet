@@ -147,10 +147,6 @@ class Handle:
         ReqList().remove_req(req_r)
         args.req = req_r
 
-        for type_s in args.conv_s:
-            for id_s in args.conv_s[type_s]:
-                args.conv_r[type_s][id_s] = "已同意请求！"
-
         return args
 
     @classmethod
@@ -169,10 +165,6 @@ class Handle:
                     req_r[type][flag] = False
         args.req = req_r
         ReqList().remove_req(req_r)
-
-        for type_s in args.conv_s:
-            for id_s in args.conv_s[type_s]:
-                args.conv_r[type_s][id_s] = "已拒绝请求！"
 
         return args
 
