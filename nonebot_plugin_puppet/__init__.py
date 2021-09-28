@@ -147,7 +147,7 @@ async def _(bot: Bot, event: RequestEvent):
         conv_r["group"].append(event.group_id)
 
     if str(event.user_id) not in bot.config.superusers:
-        header = f"【请求】{event.flag}"
+        header = f"【请求】{event.flag}\n"
         sender = (await bot.get_stranger_info(user_id=event.user_id))[
             "nickname"
         ] + f" {strftime('%Y-%m-%d %H:%M:%S', localtime(event.time))} \n"
@@ -160,7 +160,6 @@ async def _(bot: Bot, event: RequestEvent):
                 + (await bot.get_group_info(group_id=event.group_id))["group_name"]
                 + f" ({event.group_id})\n"
             )
-            + f" ({event.flag})"
             + (f"\n备注：{event.comment}" if event.comment else "")
         )
         message = header + sender + message
