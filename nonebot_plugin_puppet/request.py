@@ -29,7 +29,7 @@ class ReqList:
     # 移除请求
     def remove_req(self, req: Req) -> "ReqList":
         for type in req:
-            for flag in req:
+            for flag in req[type]:
                 if flag in self.__req_list[type]:
                     self.__req_list[type].remove(flag)
         self.__dump()
