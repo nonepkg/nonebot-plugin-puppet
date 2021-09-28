@@ -10,7 +10,7 @@ class ReqList:
     __req_list: Req
     __req_list_template: Req = {"friend": [], "invite": [], "add": []}
 
-    def __init__(self, path: Path = Path() / "data" / "puppet" / "__req_list.yml"):
+    def __init__(self, path: Path = Path() / "data" / "puppet" / "req_list.yml"):
         self.__path = path
         self.__load()
 

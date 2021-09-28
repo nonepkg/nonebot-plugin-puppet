@@ -9,7 +9,7 @@ class ConvMapping:
     __path: Path
     __conv_mapping: Dict[str, Dict[int, Conv]]
 
-    def __init__(self, path: Path = Path() / "data" / "puppet" / "__conv_mapping.yml"):
+    def __init__(self, path: Path = Path() / "data" / "puppet" / "conv_mapping.yml"):
         self.__path = path
         self.__load()
 
