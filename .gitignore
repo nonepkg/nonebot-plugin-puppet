@@ -4,5 +4,6 @@ __pycache__
 !pyproject.toml
 !poetry.lock
 !README.md
+!CHANGELOG.md
 !LICENSE
 !.gitignore

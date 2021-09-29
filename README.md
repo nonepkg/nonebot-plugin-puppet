@@ -96,37 +96,3 @@ git clone https://github.com/Jigsaw111/nonebot_plugin_puppet.git
 graph LR
 用户 & 群 ---> Puppet ---> 用户 & 群
 ```
-
-## Changelog
-
-- 210928 0.2.0
-  - 修复 flag 记录残留的 bug
-  - 修复 aprv/rej 操作无效的 bug
-  - 修复 aprv 需要参数 message 的 bug
-  - 删除数据文件莫名其妙的前缀
-- 210525 0.2.0-alpha.6
-  - 新增退群功能
-  - 修复了 list 重复展示的 bug
-  - 修复了 aprv/rej 操作无效的 bug
-- 210525 0.2.0-alpha.5
-  - 实现转接请求事件
-  - 修复了 ln/rm 操作无效的 bug
-  - 修复了 list 重复展示的 bug
-  - 修复了 --undirect 参数无效的 bug
-- 210429 0.2.0-alpha.4
-  - 新增部分命令的缩写
-  - list 命令能够显示单双向
-  - 支持 -h, --help 参数
-  - 发生错误时返回相关信息
-  - 分离 handle 与 parser
-- 210429 0.2.0-alpha.3
-  - 修复未设置群名片时昵称为空的问题
-  - 实现单向的会话转接
-- 210429 0.2.0-alpha.2
-  - 修复指定会话不在会话列表时会产生错误的问题
-  - 修复群发消息时由于风控/禁言而被打断的问题
-- 210421 0.2.0-alpha.1
-  - 实现多对多的会话转接
-  - 重构数据结构以便下次更新
-- 210416 0.1.0
-  - 实现单对单的会话转接
