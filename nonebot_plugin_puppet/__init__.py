@@ -1,8 +1,9 @@
 from time import strftime, localtime
+from argparse import Namespace
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import on_message, on_request, on_shell_command
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import (
+from nonebot.params import ShellCommandArgs
+from nonebot.adapters.onebot.v11 import (
     Bot,
     Message,
     RequestEvent,
@@ -14,7 +15,7 @@ from nonebot.adapters.cqhttp import (
     unescape,
 )
 
-from nonebot_plugin_puppet.parser import parser, Namespace
+from nonebot_plugin_puppet.parser import parser
 from nonebot_plugin_puppet.handle import Handle
 from nonebot_plugin_puppet.mapping import ConvMapping
 from nonebot_plugin_puppet.request import ReqList
@@ -25,7 +26,7 @@ request = on_request(priority=10, block=False)
 
 
 @command.handle()
-async def _(bot: Bot, event: MessageEvent, state: T_State):
+async def _(bot: Bot, event: MessageEvent, args: Namespace = ShellCommandArgs()):
     ConvMapping().update_conv(
         {
             "user": [user["user_id"] for user in (await bot.get_friend_list())],
@@ -33,7 +34,6 @@ async def _(bot: Bot, event: MessageEvent, state: T_State):
         },
     )
 
-    args: Namespace = state["args"]
     args.conv_s = {
         "user": [event.user_id] if isinstance(event, PrivateMessageEvent) else [],
         "group": [event.group_id] if isinstance(event, GroupMessageEvent) else [],
