@@ -23,19 +23,18 @@ class ConvMapping:
             for type_a in self.__conv_mapping:
                 for id_a in self.__conv_mapping[type_a]:
                     tmp_conv_mapping[type_a].append(id_a)
+        elif reverse:
+            for type_b in conv:
+                for id_b in conv[type_b]:
+                    for type_a in self.__conv_mapping:
+                        for id_a in self.__conv_mapping[type_a]:
+                            if id_b in self.__conv_mapping[type_a][id_a][type_b]:
+                                tmp_conv_mapping[type_a].append(id_a)
         else:
-            if reverse:
-                for type_b in conv:
-                    for id_b in conv[type_b]:
-                        for type_a in self.__conv_mapping:
-                            for id_a in self.__conv_mapping[type_a]:
-                                if id_b in self.__conv_mapping[type_a][id_a][type_b]:
-                                    tmp_conv_mapping[type_a].append(id_a)
-            else:
-                for type_a in conv:
-                    for id_a in conv[type_a]:
-                        if id_a in self.__conv_mapping[type_a]:
-                            tmp_conv_mapping = self.__conv_mapping[type_a][id_a]
+            for type_a in conv:
+                for id_a in conv[type_a]:
+                    if id_a in self.__conv_mapping[type_a]:
+                        tmp_conv_mapping = self.__conv_mapping[type_a][id_a]
 
         return tmp_conv_mapping
 
