@@ -1,5 +1,7 @@
 # Nonebot Plugin Puppet
 
+**已归档，新一代跨平台会话转接插件 [nonebot-plugin-tty](https://github.com/nonepkg/nonebot-plugin-tty) 绝赞开发中！**
+
 基于 [nonebot2](https://github.com/nonebot/nonebot2) 和 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp) 的会话转接插件
 
 [![License](https://img.shields.io/github/license/Jigsaw111/nonebot_plugin_puppet?style=flat-square)](LICENSE)
